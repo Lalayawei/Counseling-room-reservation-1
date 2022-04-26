@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CRoomMapper">
+
+    <resultMap type="CRoom" id="CRoomResult">
+        <result property="roomId"    column="room_id"    />
+        <result property="introduction"    column="introduction"    />
+        <result property="location"    column="location"    />
+        <result property="userNum"    column="user_num"    />
+    </resultMap>
+
+    <sql id="selectCRoomVo">
+        select room_id, introduction, location, user_num from c_room
+    </sql>
+
+    <select id="selectCRoomList" parameterType="CRoom" resultMap="CRoomResult">
+        <include refid="selectCRoomVo"/>
+        <where>
+            <if test="location != null  and location != ''"> and location = #{location}</if>
+            <if test="userNum != null "> and user_num &gt;= #{userNum}</if>
+        </where>
+    </select>
+
+    <select id="selectCRoomByRoomId" parameterType="Long" resultMap="CRoomResult">
+        <include refid="selectCRoomVo"/>
+        where room_id = #{roomId}
+    </select>
+
+    <insert id="insertCRoom" parameterType="CRoom">
+        insert into c_room
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roomId != null">room_id,</if>
+            <if test="introduction != null">introduction,</if>
+            <if test="location != null and location != ''">location,</if>
+            <if test="userNum != null">user_num,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roomId != null">#{roomId},</if>
+            <if test="introduction != null">#{introduction},</if>
+            <if test="location != null and location != ''">#{location},</if>
+            <if test="userNum != null">#{userNum},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCRoom" parameterType="CRoom">
+        update c_room
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="introduction != null">introduction = #{introduction},</if>
+            <if test="location != null and location != ''">location = #{location},</if>
+            <if test="userNum != null">user_num = #{userNum},</if>
+        </trim>
+        where room_id = #{roomId}
+    </update>
+
+    <delete id="deleteCRoomByRoomId" parameterType="Long">
+        delete from c_room where room_id = #{roomId}
+    </delete>
+
+    <delete id="deleteCRoomByRoomIds" parameterType="String">
+        delete from c_room where room_id in
+        <foreach item="roomId" collection="array" open="(" separator="," close=")">
+            #{roomId}
+        </foreach>
+    </delete>
+
+
+    <sql id="selectCRoomlocationall">
+        select location from c_room
+    </sql>
+    <resultMap type="CRoom" id="CRoomlocationResult">
+        <result property="location"    column="location"    />
+    </resultMap>
+
+<!--    <select id="selectTlocationList" resultMap="CRoomlocationResult">-->
+<!--        <include refid="selectCRoomlocationall"/>-->
+<!--        <where>-->
+<!--            <if test="location != null "></if>-->
+<!--        </where>-->
+<!--    </select>-->
+
+    <select id="selectTlocationList" resultMap="CRoomResult">
+        select * from c_room
+
+        <where>
+            <if test="location != null "></if>
+        </where>
+    </select>
+
+
+</mapper>

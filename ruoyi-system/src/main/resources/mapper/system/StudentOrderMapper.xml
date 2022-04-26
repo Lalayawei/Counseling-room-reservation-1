@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.StudentOrderMapper">
+    
+    <resultMap type="StudentOrder" id="StudentOrderResult">
+        <result property="timeId"    column="time_id"    />
+        <result property="orderDate"    column="order_date"    />
+        <result property="subjectName"    column="subject_name"    />
+        <result property="uId"    column="u_id"    />
+        <result property="studentId"    column="student_id"    />
+        <result property="roomId"    column="room_id"    />
+    </resultMap>
+
+    <sql id="selectStudentOrderVo">
+        select time_id, order_date, subject_name, u_id, student_id, room_id from student_order
+    </sql>
+
+    <select id="selectStudentOrderList" parameterType="StudentOrder" resultMap="StudentOrderResult">
+        <include refid="selectStudentOrderVo"/>
+        <where>  
+            <if test="timeId != null "> and time_id = #{timeId}</if>
+            <if test="orderDate != null "> and order_date = #{orderDate}</if>
+            <if test="roomId != null "> and room_id = #{roomId}</if>
+        </where>
+    </select>
+    
+    <select id="selectStudentOrderByTimeId" parameterType="Long" resultMap="StudentOrderResult">
+        <include refid="selectStudentOrderVo"/>
+        where time_id = #{timeId}
+    </select>
+        
+    <insert id="insertStudentOrder" parameterType="StudentOrder">
+        insert into student_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="timeId != null">time_id,</if>
+            <if test="orderDate != null">order_date,</if>
+            <if test="subjectName != null">subject_name,</if>
+            <if test="uId != null">u_id,</if>
+            <if test="studentId != null">student_id,</if>
+            <if test="roomId != null">room_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="timeId != null">#{timeId},</if>
+            <if test="orderDate != null">#{orderDate},</if>
+            <if test="subjectName != null">#{subjectName},</if>
+            <if test="uId != null">#{uId},</if>
+            <if test="studentId != null">#{studentId},</if>
+            <if test="roomId != null">#{roomId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStudentOrder" parameterType="StudentOrder">
+        update student_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderDate != null">order_date = #{orderDate},</if>
+            <if test="subjectName != null">subject_name = #{subjectName},</if>
+            <if test="uId != null">u_id = #{uId},</if>
+            <if test="studentId != null">student_id = #{studentId},</if>
+            <if test="roomId != null">room_id = #{roomId},</if>
+        </trim>
+        where time_id = #{timeId}
+    </update>
+
+    <delete id="deleteStudentOrderByTimeId" parameterType="Long">
+        delete from student_order where time_id = #{timeId}
+    </delete>
+
+    <delete id="deleteStudentOrderByTimeIds" parameterType="String">
+        delete from student_order where time_id in 
+        <foreach item="timeId" collection="array" open="(" separator="," close=")">
+            #{timeId}
+        </foreach>
+    </delete>
+</mapper>
